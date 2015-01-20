@@ -18,7 +18,6 @@ class Migration(SchemaMigration):
 
         # Adding model 'rover'
         db.create_table(u'NASAROVER_rover', (
-            ('Grid_id', self.gf('django.db.models.fields.IntegerField')()),
             ('x', self.gf('django.db.models.fields.IntegerField')()),
             ('y', self.gf('django.db.models.fields.IntegerField')()),
             ('direct', self.gf('django.db.models.fields.CharField')(max_length=10)),
@@ -37,7 +36,7 @@ class Migration(SchemaMigration):
 
         # Adding model 'Mineral'
         db.create_table(u'NASAROVER_mineral', (
-            ('Name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('Name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
             ('M_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
         ))
         db.send_create_signal(u'NASAROVER', ['Mineral'])
@@ -91,7 +90,7 @@ class Migration(SchemaMigration):
         u'NASAROVER.mineral': {
             'M_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'Meta': {'object_name': 'Mineral'},
-            'Name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'Name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
         },
         u'NASAROVER.mineraldistribution': {
             'Grid_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['NASAROVER.Grid']"}),
@@ -102,7 +101,6 @@ class Migration(SchemaMigration):
             'subgrid_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['NASAROVER.subgrid']"})
         },
         u'NASAROVER.rover': {
-            'Grid_id': ('django.db.models.fields.IntegerField', [], {}),
             'Meta': {'object_name': 'rover'},
             'direct': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'rover_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
