@@ -1,12 +1,13 @@
+'''DocString for models'''
 from django.db import models
 from django.db.models.signals import post_save
 from random import randint
-from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.contrib.auth.models import User
 # Create your models here.
 
 
 class Grid(models.Model):
+    '''DocString for Grid'''
     Grid_id = models.AutoField(primary_key=True)
     length = models.IntegerField()
     breadth = models.IntegerField()
@@ -15,18 +16,18 @@ class Grid(models.Model):
         return str(self.Grid_id)
 
 
-class rover(models.Model):
+class Rover(models.Model):
+    '''DocString for rover'''
   #  Grid_id = models.IntegerField()
-    x = models.IntegerField()
-    y = models.IntegerField()
-    direct = models.CharField(max_length=10)
     rover_id = models.AutoField(primary_key=True)
-
+    rover_name = models.CharField(max_length=50)
+    rover_ownedby = models.ForeignKey(User)
     def __unicode__(self):
         return str(self.rover_id)
 
 
-class subgrid(models.Model):
+class Subgrid(models.Model):
+    '''DocString for subgrid'''
     Grid = models.ForeignKey(Grid)
     grid_x = models.IntegerField()
     grid_y = models.IntegerField()
@@ -37,6 +38,7 @@ class subgrid(models.Model):
 
 
 class Mineral(models.Model):
+    '''DocString for Minerals'''
     Name = models.CharField(max_length=50, unique=True)
     M_id = models.AutoField(primary_key=True)
 
@@ -45,33 +47,44 @@ class Mineral(models.Model):
 
 
 class MineralDistribution(models.Model):
+    '''DocString for MineralDistribution'''
     Grid_id = models.ForeignKey(Grid)
-    subgrid_id = models.ForeignKey(subgrid)
+    subgrid_id = models.ForeignKey(Subgrid)
     m_id = models.ForeignKey(Mineral)
     quanity = models.IntegerField()
 
     def __unicode__(self):
-        return "Grid " + str(self.Grid_id) + " subgrid "
-        + str(self.subgrid_id.subgrid_id)
-        + " mineral "
-        + str(self.m_id.Name)
-
-
-class roversensor(models.Model):
-    rover_id = models.ForeignKey(rover)
+        st1 = "Grid " + str(self.Grid_id)
+        st1 += " subgrid "+ str(self.subgrid_id.subgrid_id)
+        st1 += " mineral "+ str(self.m_id.Name)
+        return st1
+class Roversensor(models.Model):
+    '''DocString for roversensro'''
+    rover_id = models.ForeignKey(Rover)
     m_id = models.ForeignKey(Mineral)
 
     unique_together = ('rover_id', 'm_id')
 
     def __unicode__(self):
-        return "Rover " + str(self.rover_id.rover_id)
-        + " mineral " + str(self.m_id.Name)
+        st1 = "Rover " + str(self.rover_id.rover_id)
+        st1 += " mineral " + str(self.m_id.Name)
+        return st1
 
+class Rover_position(models.Model):
+    '''DocString for rover_position'''
+    Grid_id = models.IntegerField()
+    rover_id = models.ForeignKey(Rover)
+    rover_x = models.IntegerField()
+    rover_y = models.IntegerField()
+    rover_direction = models.CharField(max_length=5)
+    def __unicode__(self):
+        return str(self.rover_id.rover_id)
 
 def subgrid_maker(sender, instance, **kwargs):
+    '''DocString for subgrid_maker'''
     for i in range(instance.length):
         for j in range(instance.breadth):
-            subgr = subgrid()
+            subgr = Subgrid()
             subgr.Grid = instance
             subgr.grid_x = i
             subgr.grid_y = j
@@ -80,6 +93,7 @@ def subgrid_maker(sender, instance, **kwargs):
 
 
 def distribution(sender, instance, **kwargs):
+    '''DocString for distribution'''
     mine = Mineral.objects.all()
     for k in mine:
         distri = MineralDistribution()
@@ -93,5 +107,15 @@ def distribution(sender, instance, **kwargs):
             distri.quanity = randint(3, 11)
         distri.save()
 
+def roverposition(sender, instance, **kwargs):
+    '''DocString for roverposition'''
+    obj = Rover_position()
+    obj.rover_x = 0
+    obj.rover_y = 0
+    obj.rover_direction = ''
+    obj.Grid_id = 0
+    obj.rover_id = instance
+    obj.save()
 post_save.connect(subgrid_maker, sender=Grid)
-post_save.connect(distribution, sender=subgrid)
+post_save.connect(distribution, sender=Subgrid)
+post_save.connect(roverposition, sender=Rover)

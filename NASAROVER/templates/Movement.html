@@ -1,6 +1,11 @@
 <form action = "/movement/" method = 'POST'>
 	{%csrf_token%}
-	{{form}}
+	Movement String : <input type = 'text' name = 'MovementString'>
+	Rover_id : <select name = 'rover_id'>
+		{% for p in k %}
+			<option value = '{{p.rover_id}}'>{{p.rover_id}}</option>
+		{% endfor %}
+		</select>
 	<input type ="submit" value = "save">
 </form>
 <a href = "http://127.0.0.1:8000/" >Go to Menu</a>

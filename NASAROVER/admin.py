@@ -1,9 +1,12 @@
+'''DocString for admin'''
 from django.contrib import admin
-from models import Grid, subgrid, Mineral, MineralDistribution, rover, roversensor
+from NASAROVER.models import Grid, Mineral, Subgrid
+from NASAROVER.models import MineralDistribution, Rover, Roversensor, Rover_position
 # Register your models here.
 admin.site.register(Grid)
-admin.site.register(subgrid)
+admin.site.register(Subgrid)
 admin.site.register(Mineral)
 admin.site.register(MineralDistribution)
-admin.site.register(rover)
-admin.site.register(roversensor)
+admin.site.register(Rover)
+admin.site.register(Roversensor)
+admin.site.register(Rover_position)

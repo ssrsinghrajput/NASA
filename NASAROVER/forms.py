@@ -2,39 +2,66 @@
 from django.forms import ModelForm
 from django import forms
 from django.db import models
-from NASAROVER.models import Grid, Mineral
-from NASAROVER.models import MineralDistribution, rover, subgrid, roversensor
+from NASAROVER.models import Grid, Mineral, Rover_position
+from NASAROVER.models import Rover, Roversensor
+#from userauth.models import UserProfile
+from django.contrib.auth.models import User
+
+
+class UserForm(ModelForm):
+
+    '''DocString for UserForm'''
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta():
+
+        '''DocString for Meta'''
+        model = User
+        fields = ('username', 'email', 'password')
 
 
 class GridForm(ModelForm):
+
     '''DocString for GridForm'''
-    class Meta:
+    class Meta():
+
+        '''DocString for Meta'''
         model = Grid
         field = '__all__'
 
 
 class RoverForm(ModelForm):
+
     '''DocString for RoverForm'''
-    class Meta:
-        model = rover
+    class Meta():
+
+        '''DocString for Meta'''
+        model = Rover
         field = '__all__'
 
 
 class RoverSensor(ModelForm):
+
     '''DocString for GridForm'''
-    class Meta:
-        model = roversensor
+    class Meta():
+
+        '''DocString for Meta'''
+        model = Roversensor
         field = '__all__'
 
 
 class mineral(ModelForm):
+
     '''docstring for mineral'''
-    class Meta:
+    class Meta():
+
+        '''DocString for Meta'''
         model = Mineral
         field = '__all__'
 
 
 class rovermovement(forms.Form):
+
     '''docstring for rovermovement'''
     MovementString = forms.CharField(label='MovementString', max_length=200)
     # class Meta:
@@ -43,9 +70,11 @@ class rovermovement(forms.Form):
     rover_id = forms.IntegerField(label='rover_id')
 
 
-class roverupdate(forms.Form):
-    Grid_id = forms.IntegerField(label='Grid_id')
-    rover_id = forms.IntegerField(label='rover_id')
-    rover_x = forms.IntegerField(label='rover_x')
-    rover_y = forms.IntegerField(label='rover_y')
-    rover_direction = forms.CharField(label='rover_direction')
+class roverupdate(ModelForm):
+
+    '''DocString for roverupdate'''
+    class Meta():
+
+        '''DocString for Meta'''
+        model = Rover_position
+        field = '__all__'
