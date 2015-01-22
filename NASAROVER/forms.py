@@ -2,7 +2,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.db import models
-from NASAROVER.models import Grid, Mineral, Rover_position
+from NASAROVER.models import Grid, Mineral, Roverposition
 from NASAROVER.models import Rover, Roversensor
 #from userauth.models import UserProfile
 from django.contrib.auth.models import User
@@ -76,5 +76,5 @@ class roverupdate(ModelForm):
     class Meta():
 
         '''DocString for Meta'''
-        model = Rover_position
+        model = Roverposition
         field = '__all__'

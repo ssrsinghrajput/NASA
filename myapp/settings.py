@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
+import rest_framework
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'NASAROVER',
     'south',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -82,3 +83,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_URL = '/login/'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.permissions.AllowAny',
+        #'#rest_framework.authentication.TokenAuthentication',
+        
+    )
+}
+TEMPLATE_CONTEXT_PROCESSORS = ('django.core.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+    )

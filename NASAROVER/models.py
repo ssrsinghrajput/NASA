@@ -8,12 +8,12 @@ from django.contrib.auth.models import User
 
 class Grid(models.Model):
     '''DocString for Grid'''
-    Grid_id = models.AutoField(primary_key=True)
+    grid_id = models.AutoField(primary_key=True)
     length = models.IntegerField()
     breadth = models.IntegerField()
 
     def __unicode__(self):
-        return str(self.Grid_id)
+        return str(self.grid_id)
 
 
 class Rover(models.Model):
@@ -28,51 +28,53 @@ class Rover(models.Model):
 
 class Subgrid(models.Model):
     '''DocString for subgrid'''
-    Grid = models.ForeignKey(Grid)
+    grid = models.ForeignKey(Grid)
     grid_x = models.IntegerField()
     grid_y = models.IntegerField()
     subgrid_id = models.AutoField(primary_key=True)
 
     def __unicode__(self):
-        return "Grid " + str(self.Grid) + " Subgrid " + str(self.subgrid_id)
+        return "Grid " + str(self.grid) + " Subgrid " + str(self.subgrid_id)
 
 
 class Mineral(models.Model):
     '''DocString for Minerals'''
-    Name = models.CharField(max_length=50, unique=True)
-    M_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, unique=True)
+    m_id = models.AutoField(primary_key=True)
 
     def __unicode__(self):
-        return str(self.Name)
+        return str(self.name)
 
 
 class MineralDistribution(models.Model):
     '''DocString for MineralDistribution'''
-    Grid_id = models.ForeignKey(Grid)
+    grid_id = models.ForeignKey(Grid)
     subgrid_id = models.ForeignKey(Subgrid)
     m_id = models.ForeignKey(Mineral)
     quanity = models.IntegerField()
 
     def __unicode__(self):
-        st1 = "Grid " + str(self.Grid_id)
+        st1 = "Grid " + str(self.grid_id)
         st1 += " subgrid "+ str(self.subgrid_id.subgrid_id)
-        st1 += " mineral "+ str(self.m_id.Name)
+        st1 += " mineral "+ str(self.m_id.name)
         return st1
 class Roversensor(models.Model):
     '''DocString for roversensro'''
     rover_id = models.ForeignKey(Rover)
     m_id = models.ForeignKey(Mineral)
 
-    unique_together = ('rover_id', 'm_id')
+    class Meta:
+        '''DocString for Meta'''
+        unique_together = ('rover_id', 'm_id')
 
     def __unicode__(self):
         st1 = "Rover " + str(self.rover_id.rover_id)
-        st1 += " mineral " + str(self.m_id.Name)
+        st1 += " mineral " + str(self.m_id.name)
         return st1
 
-class Rover_position(models.Model):
-    '''DocString for rover_position'''
-    Grid_id = models.IntegerField()
+class Roverposition(models.Model):
+    '''DocString for roverposition'''
+    grid_id = models.IntegerField()
     rover_id = models.ForeignKey(Rover)
     rover_x = models.IntegerField()
     rover_y = models.IntegerField()
@@ -85,7 +87,7 @@ def subgrid_maker(sender, instance, **kwargs):
     for i in range(instance.length):
         for j in range(instance.breadth):
             subgr = Subgrid()
-            subgr.Grid = instance
+            subgr.grid = instance
             subgr.grid_x = i
             subgr.grid_y = j
             # p+=1
@@ -97,7 +99,7 @@ def distribution(sender, instance, **kwargs):
     mine = Mineral.objects.all()
     for k in mine:
         distri = MineralDistribution()
-        distri.Grid_id = instance.Grid
+        distri.grid_id = instance.grid
         distri.subgrid_id = instance
         distri.m_id = k
         k = randint(0, 2)
@@ -109,11 +111,11 @@ def distribution(sender, instance, **kwargs):
 
 def roverposition(sender, instance, **kwargs):
     '''DocString for roverposition'''
-    obj = Rover_position()
+    obj = Roverposition()
     obj.rover_x = 0
     obj.rover_y = 0
     obj.rover_direction = ''
-    obj.Grid_id = 0
+    obj.grid_id = 0
     obj.rover_id = instance
     obj.save()
 post_save.connect(subgrid_maker, sender=Grid)
